@@ -5,6 +5,7 @@ echo 	"
 	auto lo
 	iface lo inet loopback
  
+	auto enp0s8
 	iface enp0s8 inet static
 	address 10.30.0.43
 	netmask 255.255.0.0
