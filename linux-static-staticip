@@ -1,0 +1,34 @@
+#!/bin/bash
+
+echo 	"
+	# interfaces(5) file used by ifup(8) and ifdown(8)
+	auto lo
+	iface lo inet loopback
+ 
+	iface enp0s8 inet static
+	address 10.30.0.43
+	netmask 255.255.0.0
+	gateway 10.30.0.1
+	dns-nameservers 10.30.0.34
+		"
+> /etc/network/interfaces
+
+sleep .5
+
+echo 	"
+	[main]
+	plugins=ifupdown,keyfile,ofono
+	#dns=dnsmasq
+
+	[ifupdown]
+	managed=false
+		"
+> /etc/NetworkManager/NetworkManager.conf 
+
+sleep .5
+
+touch /etc/network/interfaces.d/enp0s8
+chmod 744  /etc/network/interfaces.d/enp0s8
+ip addr flush enp0s8 &&  systemctl restart networking.service
+ifdown enp0s8 &&  ifup enp0s8
+

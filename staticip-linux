@@ -1,0 +1,31 @@
+#!/bin/bash
+# Set up a Static IP on an Ubuntu-Debian based machine
+
+cat >  /etc/network/interfaces << EOL
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto enp3s0
+iface enp3s0 inet static
+	address 10.41.0.79
+	netmask 255.255.252.0
+	gateway 10.41.0.1
+	dns-nameservers 10.41.2.254 8.8.8.8
+	dns-domain tworiverspcs.lan
+	dns-search tworiverspcs.lan
+EOL
+cat >  /etc/NetworkManager/NetworkManager.conf << EOL
+[main]
+	plugins=ifupdown,keyfile
+#dns=dnsmasq
+[ifupdown]
+	managed=false
+EOL
+touch /etc/network/interfaces.d/enp3s0
+chmod 744 /etc/network/interfaces.d/enp3s0
+ip addr flush enp3s0
+systemctl restart networking.service
+ifdown enp3s0
+ifup enp3s0

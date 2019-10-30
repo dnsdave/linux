@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cat ~/Desktop/interfaces > /etc/network/interfaces
+
+sleep .5
+
+cat ~/Desktop/NetworkManager > /etc/NetworkManager/NetworkManager.conf 
+
+sleep .5
+
+touch /etc/network/interfaces.d/enp0s25
+
+chmod 744  /etc/network/interfaces.d/enp0s25
+
+ip addr flush enp0s25 && sudo systemctl restart networking.service
+
+ifdown enp0s25 && sudo ifup enp0s25
+
