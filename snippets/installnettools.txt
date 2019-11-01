@@ -10,5 +10,5 @@
 	Startmate&
 	EOL
 	
-	apt-get -y install  xrdp htop nmap
+	apt-get -y install  xrdp htop nmap curl expect iftop net-tools
 	vncserver :1
