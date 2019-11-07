@@ -1,7 +1,14 @@
-#!/bin/bash
-
+# Output dpkg list to a local file for viewing in a text editor
 dpkg -l > ~/Desktop/dpkg1
+
+#
 ssh -t dnsadmin@10.5.0.101 dpkg -l > ~/Desktop/dpkg2
+
+#
 scp dnsadmin@10.5.0.101:~/Desktop/dpkg2 dnsadmin@10.5.0.101 ~/Desktop/dpkg2
+
+#
 diff -cy ~/Desktop/dpkg1 ~/Desktop/dpkg2 > ~/Desktop/dpkg-diff
+#Open the file in the local text editor
+#(Create a variable that opens it in the native app for each OS)
 leafpad ~/Desktop/dpkg-diff
