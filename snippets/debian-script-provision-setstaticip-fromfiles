@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cat ~/Scripts/Configurations/Linux/interfaces > /etc/network/interfaces
+cat ~/Scripts/Configurations/Linux/NetworkManager > /etc/NetworkManager/NetworkManager.conf 
+touch /etc/network/interfaces.d/$interface
+chmod 744  /etc/network/interfaces.d/$interface
+ip addr flush $interface && sudo systemctl restart networking.service
+ifdown $interface && sudo ifup $interface
