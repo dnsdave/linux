@@ -3,43 +3,32 @@
 read -p 'Address: ' address
 read -p 'Subnet Mask: ' netmask
 read -p 'Gateway: ' gateway
-read -p 'DNS 1:' dns1
-read -p 'DNS 2:' dns2
+read -p 'DNS:' dns1 dns2 dns3
 read -p 'Search:' search
 read -p 'Domain: ' domain
 read -p 'Interface Name: ' interface
 
-echo 	"
-	# interfaces(5) file used by ifup(8) and ifdown(8)
-	auto lo
-	iface lo inet loopback
- 
-	iface $interface inet static
+cat > /etc/network/interfaces <<- EOL
+auto lo
+iface lo inet loopback
+
+auto $interface
+iface $interface inet static
 	address $address
-	netmask 255.255.0.0
+	netmask $netmask
 	gateway $gateway
-	dns-nameservers $dns1 $dns2
+	dns-nameservers $dns1 $dns2 $dns3
 	dns-search $search
 	dns-domain $domain
-		"
-> /etc/network/interfaces
-
-sleep .5
-
-echo 	"
+EOL
+cat > /etc/NetworkManager/NetworkManager.conf <<- EOL
 	[main]
 	plugins=ifupdown,keyfile,ofono
 	#dns=dnsmasq
-
 	[ifupdown]
 	managed=true
-		"
-> /etc/NetworkManager/NetworkManager.conf 
-
-sleep .5
-
+EOL
 touch /etc/network/interfaces.d/$interface
 chmod 744  /etc/network/interfaces.d/$interface
 ip addr flush $interface &&  systemctl restart networking.service
 ifdown $interface &&  ifup $interface
-
