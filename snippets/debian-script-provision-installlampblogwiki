@@ -25,19 +25,6 @@ chmod -R 755 /var/www/html/
 systemctl restart apache2.service
 clear
 echo ""
-echo "OK, now let's install Webmin for some extra admin power monitoring! You know you want to."
-add-apt-repository 'deb http://download.webmin.com/download/repository sarge contrib'
-echo ""
-echo ""
-echo ""
-echo ""
-echo ""
-echo ""
-wget http://www.webmin.com/jcameron-key.asc
-apt-key add jcameron-key.asc
-rm jcameron-key.asc
-apt-get update
-apt-get install -y webmin
 clear
 echo ""
 echo ""

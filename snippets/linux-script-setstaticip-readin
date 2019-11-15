@@ -1,0 +1,37 @@
+#!/bin/bash
+# Getting all the configuration variables set
+read -p 'Address: ' address
+read -p 'Subnet Mask: ' netmask
+read -p 'Gateway: ' gateway
+read -p 'DNS: ' dns1 dns2
+read -p 'Domain: ' domain
+read -p 'Interface Name: ' interface
+# Building the interface file
+cat > /etc/network/interfaces <<EOL
+	# interfaces(5) file used by ifup(8) and ifdown(8)
+	auto lo
+	iface lo inet loopback
+ 
+	iface $interface inet static
+	address $address
+	netmask $netmask
+	gateway $gateway
+	dns-nameservers $dns1 $dns2
+	dns-search $domain
+	dns-domain $domain
+EOL
+# Making ifupdown manage the interface instead of Network Manager
+cat > /etc/NetworkManager/NetworkManager.conf <<EOL
+	[main]
+	plugins=ifupdown,keyfile,ofono
+	#dns=dnsmasq
+
+	[ifupdown]
+	managed=true
+EOL
+# Create a file for the interface daemon to read?
+touch /etc/network/interfaces.d/$interface
+chmod 744  /etc/network/interfaces.d/$interface
+# Flush addresses, restart networking service and reset the interface to get the IP address from the interface config file
+ip addr flush $interface &&  systemctl restart networking.service
+ifdown $interface && ifup $interface
