@@ -1,0 +1,49 @@
+#!/bin/bash
+# Install a LAMP stack and Wordpress/Wikimedia and configure for first use
+apt-get update -y
+apt-get install -y apache2 apache2-utils mysql-server-5.7 mysql-client-5.7 mysql-common php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-common php7.0-cli php7.0-json php7.0-opcache php7.0-readline php7.0-zip php7.0-xml php7.0-intl php7.0-cgi php7.0-curl php7.0-gd php7.0-mbstring phpmyadmin
+a2enmod php7.0
+echo ""
+echo "OK, LAMP is installed, but we have to make sure you can use PHPMYADMIN on this system."
+echo ""
+ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+a2enconf phpmyadmin.conf
+echo ""
+echo "Now your LAMP stack is in proper working order. Whadya say we get that wiki and blog set for first use?"
+echo ""
+echo "Do you want to install a Wordpress blog and Mediawiki wiki?(yes/no)"
+read blogwiki
+if [ "$blogwiki" == "yes" ]
+then
+    wget http://wordpress.org/latest.tar.gz
+    tar -xzf latest.tar.gz
+    mkdir /var/www/html/blog
+    rsync -a wordpress/* /var/www/html/blog
+    wget https://releases.wikimedia.org/mediawiki/1.30/mediawiki-1.30.0.tar.gz
+    tar -xzf mediawiki-1.30.0.tar.gz
+    mkdir /var/www/html/wiki
+    rsync -a mediawiki-1.30.0/* /var/www/html/wiki
+    rm -rf wordpress/ latest.tar.gz mediawiki-1.30.0/ mediawiki-1.30.0.tar.gz
+    chown -R www-data: /var/www/html/
+    chmod -R 755 /var/www/html/
+    systemctl restart apache2.service
+else
+    echo "I guess you don't need Wordpress or Mediawiki. Not a problem. Let's install Webmin."
+fi
+clear
+echo ""
+echo ""
+echo "Do you want to continue?(yes/no)"
+read webmin
+if [ "$webmin" == "yes" ]
+then
+    sh ./installwebmin.sh
+else
+    echo "I guess you don't need WebMin. Not a problem. Let's finish up."
+fi
+echo ""
+echo ""
+echo "Ok. You are all LAMPed up!"
+echo ""
+echo "Now if we could just figure out how to set up those pesky MySQL DBs through scripting we could really be getting somewhere. For now, you'll just have to do it the old fashioned way. Have fun!"
+echo ""

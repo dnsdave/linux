@@ -1,6 +1,5 @@
 #!/bin/bash
 # Install a LAMP stack and Wordpress/Wikimedia and configure for first use
-
 apt-get install -y apache2 apache2-utils mysql-server-5.7 mysql-client-5.7 mysql-common php7.0 libapache2-mod-php7.0 php7.0-mysql php7.0-common php7.0-cli php7.0-json php7.0-opcache php7.0-readline php7.0-zip php7.0-xml php7.0-intl php7.0-cgi php7.0-curl php7.0-gd php7.0-mbstring phpmyadmin
 a2enmod php7.0
 echo ""
